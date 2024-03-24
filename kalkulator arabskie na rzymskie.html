@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konwerter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Konwerter</h2>
+    <label for="inputNumber">Wprowadź liczbę arabską lub rzymską:</label>
+    <input type="text" id="inputNumber" placeholder="Wprowadź liczbę...">
+    <button onclick="convert()">Konwertuj</button>
+    <p id="result"></p>
+</div>
+
+<script>
+function convert() {
+    var inputNumber = document.getElementById("inputNumber").value.trim();
+    var resultElement = document.getElementById("result");
+    var convertedNumber;
+    
+    if (/^\d+$/.test(inputNumber)) {
+
+        convertedNumber = arabicToRoman(parseInt(inputNumber));
+    } else if (/^[IVXLCDM]+$/i.test(inputNumber)) {
+
+        convertedNumber = romanToArabic(inputNumber.toUpperCase());
+    } else {
+        resultElement.textContent = "Nieprawidłowe dane!";
+        return;
+    }
+    
+    resultElement.textContent = "Przekonwertowana liczba: " + convertedNumber;
+}
+
+function arabicToRoman(num) {
+    var romanNumerals = [
+        { value: 1000, numeral: 'M' },
+        { value: 900, numeral: 'CM' },
+        { value: 500, numeral: 'D' },
+        { value: 400, numeral: 'CD' },
+        { value: 100, numeral: 'C' },
+        { value: 90, numeral: 'XC' },
+        { value: 50, numeral: 'L' },
+        { value: 40, numeral: 'XL' },
+        { value: 10, numeral: 'X' },
+        { value: 9, numeral: 'IX' },
+        { value: 5, numeral: 'V' },
+        { value: 4, numeral: 'IV' },
+        { value: 1, numeral: 'I' }
+    ];
+    var result = '';
+    romanNumerals.forEach(function (pair) {
+        while (num >= pair.value) {
+            result += pair.numeral;
+            num -= pair.value;
+        }
+    });
+    return result;
+}
+
+function romanToArabic(s) {
+    var romanNumerals = {
+        'I': 1,
+        'V': 5,
+        'X': 10,
+        'L': 50,
+        'C': 100,
+        'D': 500,
+        'M': 1000
+    };
+    var result = 0;
+    for (var i = 0; i < s.length; i++) {
+        var current = romanNumerals[s.charAt(i)];
+        var next = romanNumerals[s.charAt(i + 1)];
+        if (next && current < next) {
+            result += next - current;
+            i++;
+        } else {
+            result += current;
+        }
+    }
+    return result;
+}
+</script>
+
+</body>
+</html>
